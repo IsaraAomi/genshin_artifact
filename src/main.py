@@ -1,5 +1,6 @@
 import numpy as np
 import multiprocessing
+import os
 from tqdm import tqdm
 from artifact import *
 
@@ -8,7 +9,8 @@ SHORT_PROGRESS_BAR="{l_bar}{bar:20}{r_bar}{bar:-10b}"
 RATE_2PICK = 0.07
 
 
-def calc_trial_get_artifact(type, options):
+def calc_trial_get_artifact(seed, type, options):
+    np.random.seed(seed)
     trial = 0
     while (True):
         trial += 1
@@ -27,25 +29,29 @@ def wrap_calc_trial_get_artifact(args):
     return calc_trial_get_artifact(*args)
 
 
-def calc_average_trial_get_artifact(type, options, sample_num=100, process="single"):
+def calc_average_trial_get_artifact(type, options, sample_num, process):
+    artifact_type = ["flower", "plume", "sands", "goblet", "circlet"]
     get_num = []
     if (process == "single"):
-        for id in tqdm(range(sample_num), bar_format=SHORT_PROGRESS_BAR):
-            get_num.append(calc_trial_get_artifact(type=type, options=options))
+        for seed in tqdm(range(sample_num), bar_format=SHORT_PROGRESS_BAR):
+            seed += sample_num*artifact_type.index(type)
+            get_num.append(calc_trial_get_artifact(seed, type, options))
     elif (process == "multi"):
         pool = multiprocessing.Pool(processes=multiprocessing.cpu_count()-1)
         args = []
-        for i in range(sample_num):
-            args.append((type, options))
+        for seed in range(sample_num):
+            seed += sample_num*artifact_type.index(type)
+            args.append((seed, type, options))
         imap = pool.imap(wrap_calc_trial_get_artifact, args)
         get_num = list(tqdm(imap, total=len(args), bar_format=SHORT_PROGRESS_BAR))
     else:
         print_error("process is incorrect.")
     print_info("type={}: average trial={}: {}".format(type, np.mean(get_num), options))
+    np.save(os.path.join("..", "data", type+"_"+"sample="+str(sample_num)+".npy"), np.array(get_num))
 
 
 def sim_case_1():
-    sample_num = 10000
+    sample_num = 1000
     
     print_info("start flower")
     target_options = {"main":"HP_+", "sub1":"CRIT_DMG", "sub2":"CRIT_Rate", "sub3":"Energy_Recharge", "sub4":"HP_%"}
@@ -69,7 +75,6 @@ def sim_case_1():
 
 
 def main():
-    np.random.seed(0)
     sim_case_1()
 
 
