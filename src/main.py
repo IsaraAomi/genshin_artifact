@@ -5,6 +5,8 @@ from artifact import *
 
 
 SHORT_PROGRESS_BAR="{l_bar}{bar:20}{r_bar}{bar:-10b}"
+RATE_2PICK = 0.07
+
 
 def calc_trial_get_artifact(type, options):
     trial = 0
@@ -13,6 +15,10 @@ def calc_trial_get_artifact(type, options):
         pick_artifact = Artifact(type=type)
         if (pick_artifact.options == options):
             break
+        if (np.random.random() <= RATE_2PICK):
+            pick_artifact = Artifact(type=type)
+            if (pick_artifact.options == options):
+                break
     trial = 2*trial  # 2 type artifacts in 1 domain
     return trial
 
