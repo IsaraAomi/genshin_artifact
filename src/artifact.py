@@ -12,11 +12,11 @@ class Artifact:
         if (type == "flower"):
             self.main_option = ["HP_+"]
             self.main_option_p = [1.0]
-            self.set_main_option()
+            self.__set_main_option()
         elif (type == "plume"):
             self.main_option = ["ATK_+"]
             self.main_option_p = [1.0]
-            self.set_main_option()
+            self.__set_main_option()
         elif (type == "sands"):
             self.main_option = [ \
                 "HP_%", \
@@ -26,7 +26,7 @@ class Artifact:
                 "Energy_Recharge" \
             ]
             self.main_option_p = [0.2668, 0.2666, 0.2666, 0.1, 0.1]
-            self.set_main_option()
+            self.__set_main_option()
         elif (type == "goblet"):
             self.main_option = [ \
                 "HP_%", \
@@ -42,7 +42,7 @@ class Artifact:
                 "Elemental_Mastery" \
             ]
             self.main_option_p = [0.2125, 0.2125, 0.2, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.025]
-            self.set_main_option()
+            self.__set_main_option()
         elif (type == "circlet"):
             self.main_option = [ \
                 "HP_%", \
@@ -54,9 +54,9 @@ class Artifact:
                 "Elemental_Mastery" \
             ]
             self.main_option_p = [0.22, 0.22, 0.22, 0.1, 0.1, 0.1, 0.04]
-            self.set_main_option()
+            self.__set_main_option()
         else:
-            print_error("Select type.")
+            print_error("type is incorrect.")
 
         # sub option
         if (type == "flower"):
@@ -72,7 +72,7 @@ class Artifact:
                 "CRIT_DMG"
             ]
             self.sub_option_p = [0.1579, 0.1579, 0.1053, 0.1053, 0.1053, 0.1053, 0.1053, 0.0789, 0.0789]
-            self.set_sub_option()
+            self.__set_sub_option()
         elif (type == "plume"):
             self.sub_option = [
                 "HP_+", \
@@ -86,7 +86,7 @@ class Artifact:
                 "CRIT_DMG" \
             ]
             self.sub_option_p = [0.1579, 0.1579, 0.1053, 0.1053, 0.1053, 0.1053, 0.1053, 0.0789, 0.0789]
-            self.set_sub_option()
+            self.__set_sub_option()
         elif (type == "sands"):
             if (self.options["main"] == "HP_%"):
                 self.sub_option = [
@@ -151,7 +151,7 @@ class Artifact:
             else:
                 print_error("self.options is incorrect")
             self.sub_option_p = [0.15, 0.15, 0.15, 0.1, 0.1, 0.1, 0.1, 0.075, 0.075]
-            self.set_sub_option()
+            self.__set_sub_option()
         elif (type == "goblet"):
             if (self.options["main"] == "HP_%"):
                 self.sub_option = [
@@ -231,7 +231,7 @@ class Artifact:
                 self.sub_option_p = [0.15, 0.15, 0.15, 0.1, 0.1, 0.1, 0.1, 0.075, 0.075]
             else:
                 print_error("self.options is incorrect")
-            self.set_sub_option()
+            self.__set_sub_option()
         elif (type == "circlet"):
             if (self.options["main"] == "HP_%"):
                 self.sub_option = [
@@ -327,14 +327,14 @@ class Artifact:
                 self.sub_option_p = [0.15, 0.15, 0.15, 0.1, 0.1, 0.1, 0.1, 0.075, 0.075]
             else:
                 print_error("self.options is incorrect")
-            self.set_sub_option()
+            self.__set_sub_option()
 
-    def set_main_option(self):
+    def __set_main_option(self):
         if (sum(self.main_option_p) > 1.0):
             self.main_option_p[0] = self.main_option_p[0] - (sum(self.main_option_p) - 1.0)
         self.options["main"] = np.random.choice(self.main_option, p=self.main_option_p)
 
-    def set_sub_option(self):
+    def __set_sub_option(self):
         if (sum(self.sub_option_p) > 1.0):
             self.sub_option_p[0] = self.sub_option_p[0] - (sum(self.sub_option_p) - 1.0)
         if (np.random.random() <= RATE_4OP):
